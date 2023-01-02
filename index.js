@@ -76,6 +76,7 @@
       selectedCard: null,
       stage: 'select',
       wasSelectionChanged: false,
+      zonk: null,
     };
   }
 
@@ -110,6 +111,7 @@
       card.innerText = 'Zonk!';
       card.style.backgroundColor = 'red';
       isZonkDisplayed = true;
+      gameState.zonk = card.key;
     });
   }
 
@@ -165,6 +167,7 @@
     }
 
     if (gameState.stage === 'change') {
+      if (selectedCardKey === gameState.zonk) return;
       const isWinner = gameState.selectedCard === gameState.winningCard;
       gameBanner.innerText = isWinner ? 'You win!' : 'You lose!';
 
