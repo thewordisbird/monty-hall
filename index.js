@@ -41,15 +41,12 @@
   const playAgainButton = document.createElement('button');
   playAgainButton.innerText = 'Play Again';
   playAgainButton.style.height = '50px';
-  playAgainButton.style.width = '100px';
-  playAgainButton.style.border = '1px solid black';
-  playAgainButton.style.backgroundColor = 'green';
-  playAgainButton.style.color = 'white';
+  playAgainButton.style.width = '200px';
+
   playAgainButton.style.fontSize = '20px';
-  playAgainButton.style.fontWeight = 'bold';
-  playAgainButton.style.borderRadius = '5px';
   playAgainButton.style.cursor = 'pointer';
   playAgainButton.addEventListener('click', handleButtonClick);
+  playAgainButton.disabled = true;
 
   gameCanvas.appendChild(playAgainButton);
 
@@ -70,7 +67,6 @@
     changeWins: 0,
   };
 
-  console.log(gameState);
   /* End Game State */
   const cards = [cardFactory(0), cardFactory(1), cardFactory(2)];
 
@@ -98,7 +94,6 @@
 
   function displayWinner() {
     cards.forEach((card) => {
-      console.log('reconciling', card.key, gameState.winningCard);
       if (card.key === gameState.winningCard) {
         card.innerText = 'Winner!';
         card.style.backgroundColor = 'green';
@@ -129,14 +124,9 @@
     gameState.selectedCard = selectedCardKey;
 
     if (gameState.stage === 'select') {
-      gameBanner.innerText =
-        'You select ' +
-        gameState.selectedCard.key +
-        '. Now I am going to show you a zonk...';
-
+      gameBanner.innerText = 'You selected ' + gameState.selectedCard;
       displayZonk(gameState.selectedCard);
       gameState.stage = 'change';
-      console.log(gameState);
       return;
     }
 
@@ -145,32 +135,26 @@
       gameBanner.innerText = isWinner ? 'You win!' : 'You lose!';
 
       displayWinner();
-      console.log('isWinner', isWinner);
-      console.log(gameState.wasSelectionChanged);
 
       if (isWinner && gameState.wasSelectionChanged) {
-        console.log('change win');
         gameHistory.changeWins++;
       }
 
       if (!isWinner && !gameState.wasSelectionChanged) {
-        console.log('change win');
         gameHistory.changeWins++;
       }
 
       if (isWinner && !gameState.wasSelectionChanged) {
-        console.log('stay win');
         gameHistory.stayWins++;
       }
 
       if (!isWinner && gameState.wasSelectionChanged) {
-        console.log('stay win');
         gameHistory.stayWins++;
       }
 
       updateWinBar();
       gameState.stage = 'complete';
-      console.log(gameState);
+      playAgainButton.disabled = false;
       return;
     }
   }
@@ -183,6 +167,7 @@
         card.innerText = 'Card ' + card.key;
         card.style.backgroundColor = 'white';
       });
+      playAgainButton.disabled = true;
     }
   }
 
