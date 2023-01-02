@@ -19,16 +19,16 @@
   gameStatusBar.style.width = '90%';
   gameStatusBar.style.display = 'flex';
 
-  const stayBar = document.createElement('div');
-  stayBar.style.height = '50px';
-  stayBar.style.backgroundColor = 'red';
-
   const changeBar = document.createElement('div');
   changeBar.style.height = '50px';
   changeBar.style.backgroundColor = 'green';
 
-  gameStatusBar.appendChild(stayBar);
+  const stayBar = document.createElement('div');
+  stayBar.style.height = '50px';
+  stayBar.style.backgroundColor = 'red';
+
   gameStatusBar.appendChild(changeBar);
+  gameStatusBar.appendChild(stayBar);
 
   gameCanvas.appendChild(gameStatusBar);
 
