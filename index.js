@@ -13,11 +13,11 @@
   gameCanvas.style.justifyContent = 'space-around';
   gameCanvas.style.alignItems = 'center';
 
-  const winBarStats = document.createElement('div');
-  winBarStats.style.height = '50px';
-  winBarStats.style.border = '1px solid black';
-  winBarStats.style.width = '90%';
-  winBarStats.style.display = 'flex';
+  const gameStatusBar = document.createElement('div');
+  gameStatusBar.style.height = '50px';
+  gameStatusBar.style.border = '1px solid black';
+  gameStatusBar.style.width = '90%';
+  gameStatusBar.style.display = 'flex';
 
   const stayBar = document.createElement('div');
   stayBar.style.height = '50px';
@@ -27,10 +27,29 @@
   changeBar.style.height = '50px';
   changeBar.style.backgroundColor = 'green';
 
-  winBarStats.appendChild(stayBar);
-  winBarStats.appendChild(changeBar);
+  gameStatusBar.appendChild(stayBar);
+  gameStatusBar.appendChild(changeBar);
 
-  gameCanvas.appendChild(winBarStats);
+  gameCanvas.appendChild(gameStatusBar);
+
+  const playerStatusBar = document.createElement('div');
+  playerStatusBar.style.height = '50px';
+  playerStatusBar.style.border = '1px solid black';
+  playerStatusBar.style.width = '90%';
+  playerStatusBar.style.display = 'flex';
+
+  const winBar = document.createElement('div');
+  winBar.style.height = '50px';
+  winBar.style.backgroundColor = 'green';
+
+  const loseBar = document.createElement('div');
+  loseBar.style.height = '50px';
+  loseBar.style.backgroundColor = 'red';
+
+  playerStatusBar.appendChild(winBar);
+  playerStatusBar.appendChild(loseBar);
+
+  gameCanvas.appendChild(playerStatusBar);
 
   const cardContainer = document.createElement('div');
   cardContainer.style.display = 'flex';
@@ -65,6 +84,8 @@
   const gameHistory = {
     stayWins: 0,
     changeWins: 0,
+    playerWins: 0,
+    totalGames: 0,
   };
 
   /* End Game State */
@@ -105,9 +126,10 @@
   }
 
   function updateWinBar() {
-    const totalGames = gameHistory.stayWins + gameHistory.changeWins;
-    const stayPercentage = (gameHistory.stayWins / totalGames) * 100;
-    const changePercentage = (gameHistory.changeWins / totalGames) * 100;
+    const stayPercentage =
+      (gameHistory.stayWins / gameHistory.totalGames) * 100;
+    const changePercentage = 100 - stayPercentage;
+
     stayBar.style.width = stayPercentage + '%';
     if (stayPercentage > 0) {
       stayBar.innerText = `Stay wins: ${stayPercentage.toFixed(2)}%`;
@@ -115,6 +137,18 @@
     changeBar.style.width = changePercentage + '%';
     if (changePercentage > 0) {
       changeBar.innerText = `Change wins: ${changePercentage.toFixed(2)}%`;
+    }
+
+    const winPercentage =
+      (gameHistory.playerWins / gameHistory.totalGames) * 100;
+    const losePercentage = 100 - winPercentage;
+    winBar.style.width = winPercentage + '%';
+    if (winPercentage > 0) {
+      winBar.innerText = `Player won: ${winPercentage.toFixed(2)}%`;
+    }
+    loseBar.style.width = losePercentage + '%';
+    if (losePercentage > 0) {
+      loseBar.innerText = `Player Lost: ${losePercentage.toFixed(2)}%`;
     }
   }
 
@@ -138,6 +172,7 @@
 
       if (isWinner && gameState.wasSelectionChanged) {
         gameHistory.changeWins++;
+        gameHistory.playerWins++;
       }
 
       if (!isWinner && !gameState.wasSelectionChanged) {
@@ -146,11 +181,14 @@
 
       if (isWinner && !gameState.wasSelectionChanged) {
         gameHistory.stayWins++;
+        gameHistory.playerWins++;
       }
 
       if (!isWinner && gameState.wasSelectionChanged) {
         gameHistory.stayWins++;
       }
+
+      gameHistory.totalGames++;
 
       updateWinBar();
       gameState.stage = 'complete';
